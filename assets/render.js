@@ -84,6 +84,29 @@ async function initBossesPage(){
   sel.innerHTML = bosses.map((b,i)=>`<option value="${i}">${b.name}</option>`).join('');
   const render = () => {
     const b = bosses[sel.value];
+    const phasesHtml = b.phases.length ? `
+      <h3>🔹 Фазы босса</h3>
+      <div style="margin-bottom:16px">
+        ${b.phases.map(ph=>`
+          <div class="card" style="margin-bottom:8px;padding:12px">
+            <strong>Фаза ${ph.num} — ❤️${ph.hp_range}</strong>
+            ${ph.on_enter ? `<br><span class="muted">🧬 При входе: ${ph.on_enter}</span>` : ''}
+            <br><span class="muted">🔮 Умения: ${ph.skills.join(', ')}</span>
+          </div>
+        `).join('')}
+      </div>
+    ` : '';
+    const skillsHtml = b.skills.length ? `
+      <h3>✨ Умения босса</h3>
+      <div style="margin-bottom:16px">
+        ${b.skills.map(sk=>`
+          <div class="card" style="margin-bottom:8px;padding:12px">
+            <strong>🪄 ${sk.name}</strong><br>
+            <span class="muted">${sk.desc}</span>
+          </div>
+        `).join('')}
+      </div>
+    ` : '';
     box.innerHTML = `
       <h2>${b.name} <span class="muted">· уровень ${b.lvl}</span></h2>
       <table>
@@ -92,8 +115,9 @@ async function initBossesPage(){
         <tr><th>⚔️ Урон</th><td>${b.atk}</td></tr>
         <tr><th>🎯 Точность</th><td>${b.acc||'—'}</td></tr>
         ${b.block ? `<tr><th>🪖 Блок</th><td>${b.block}</td></tr>` : ''}
-        <tr><th>📖 Умения</th><td>${(b.skills||[]).join(', ')||'—'}</td></tr>
       </table>
+      ${phasesHtml}
+      ${skillsHtml}
       <p class="muted">💍 Аксессуары с этого босса смотри: Экипировка → 🐲 Аксы с РБ.</p>`;
   };
   sel.onchange = render; render();
