@@ -40,3 +40,19 @@ img{max-width:100%;height:auto}
   .hero h1{font-size:26px}
   .selects select{font-size:14px;padding:6px 8px;max-width:48%}
 }
+
+/* === МОБИЛЬНАЯ ВЕРСИЯ === */
+@media (max-width: 700px){
+  /* меню одной лентой, свайпается пальцем */
+  header{flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:10px 12px;
+         -webkit-overflow-scrolling:touch;scrollbar-width:none}
+  header::-webkit-scrollbar{display:none}
+  header a{white-space:nowrap;font-size:14px;padding:6px 10px}
+  /* таблицы не ломают экран, а скроллятся внутри карточки */
+  main{padding:12px}
+  .card{overflow-x:auto}
+  #skills-box table{min-width:430px}
+  th,td{padding:5px 6px;font-size:12.5px}
+  .hero h1{font-size:26px}
+  .selects select{font-size:14px;padding:6px 8px;max-width:48%}
+}
