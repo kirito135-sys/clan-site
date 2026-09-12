@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Клан-гайд Legacy II</title><link rel="stylesheet" href="assets/style.css"></head>
+<body><header>
+<a href="index.html" class="active">🏠 Главная</a>
+<a href="gear-weapons.html">🛡 Экипировка</a>
+<a href="dungeons.html">🏰 Данжи</a>
+<a href="builds.html">📖 Билды</a>
+<a href="skills.html">📊 Умения</a>
+<a href="exchange.html">💱 Обмен</a>
+<a href="rental.html">📦 Аренда</a>
+<a href="bosses.html">🐲 Рейд-боссы</a>
+</header><main>
+<div class="hero"><h1 id="title"></h1><p class="muted" id="subtitle"></p></div>
+<div class="card"><h2>👋 Приветствие</h2><div id="hello"></div><p id="dev" style="margin-top:12px"></p></div>
+<div class="card"><h2>🙏 Спасибо за помощь</h2><p class="muted">Помогали добывать и проверять информацию. Огромное спасибо им! 🙏</p><div id="credits" class="chips"></div></div>
+<h2>📚 Разделы сайта</h2>
+<div class="menu-grid">
+<a href="gear-weapons.html">🛡 Экипировка<span class="muted small">оружие · броня · аксы · агаты · аксы с РБ</span></a>
+<a href="dungeons.html">🏰 Данжи<span class="muted small">гайды по инстам</span></a>
+<a href="builds.html">📖 Билды<span class="muted small">поинты · умения · сеты</span></a>
+<a href="skills.html">📊 Умения<span class="muted small">таблица прокачки</span></a>
+<a href="exchange.html">💱 Обмен<span class="muted small">правила и курс</span></a>
+<a href="rental.html">📦 Аренда<span class="muted small">бесплатная выдача кланом</span></a>
+<a href="bosses.html">🐲 Рейд-боссы<span class="muted small">характеристики боссов</span></a>
+</div></main>
+<script src="assets/render.js"></script>
+<script>
+loadJSON('data/site.json').then(d=>{
+  document.getElementById('title').textContent = d.title;
+  document.getElementById('subtitle').textContent = d.subtitle || '';
+  document.getElementById('hello').innerHTML = d.hello;
+  document.getElementById('dev').innerHTML = d.dev ? 'Сайт разработал: <b>' + d.dev + '</b>' : '';
+  document.getElementById('credits').innerHTML = (d.credits||[]).map(c=>`<span class="chip">${c}</span>`).join('');
+});
+</script></body></html>

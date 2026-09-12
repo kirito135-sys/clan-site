@@ -1,0 +1,19 @@
+{
+ "levels": [
+  {"lvl": 1, "book": 1, "scroll": 0, "energy": 10, "adena": 10000},
+  {"lvl": 2, "book": 1, "scroll": 5, "energy": 20, "adena": 25000},
+  {"lvl": 3, "book": 1, "scroll": 10, "energy": 40, "adena": 50000},
+  {"lvl": 4, "book": 1, "scroll": 20, "energy": 60, "adena": 75000},
+  {"lvl": 5, "book": 1, "scroll": 30, "energy": 80, "adena": 100000},
+  {"lvl": 6, "book": 1, "scroll": 40, "energy": 100, "adena": 150000},
+  {"lvl": 7, "book": 1, "scroll": 50, "energy": 200, "adena": 200000},
+  {"lvl": 8, "book": 2, "scroll": 60, "energy": 300, "adena": 250000},
+  {"lvl": 9, "book": 2, "scroll": 70, "energy": 450, "adena": 300000},
+  {"lvl": 10, "book": 2, "scroll": 80, "energy": 600, "adena": 350000},
+  {"lvl": 11, "book": 2, "scroll": 90, "energy": 700, "adena": 400000},
+  {"lvl": 12, "book": 2, "scroll": 100, "energy": 800, "adena": 450000},
+  {"lvl": 13, "book": 3, "scroll": 150, "energy": 1000, "adena": 600000},
+  {"lvl": 14, "book": 4, "scroll": 200, "energy": 1300, "adena": 750000},
+  {"lvl": 15, "book": 5, "scroll": 400, "energy": 2000, "adena": 1000000}
+ ]
+}
