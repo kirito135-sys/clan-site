@@ -84,28 +84,20 @@ async function initBossesPage(){
   sel.innerHTML = bosses.map((b,i)=>`<option value="${i}">${b.name}</option>`).join('');
   const render = () => {
     const b = bosses[sel.value];
-    const phasesHtml = b.phases.length ? `
+    const phasesHtml = (b.phases||[]).length ? `
       <h3>🔹 Фазы босса</h3>
-      <div style="margin-bottom:16px">
-        ${b.phases.map(ph=>`
-          <div class="card" style="margin-bottom:8px;padding:12px">
-            <strong>Фаза ${ph.num} — ❤️${ph.hp_range}</strong>
-            ${ph.on_enter ? `<br><span class="muted">🧬 При входе: ${ph.on_enter}</span>` : ''}
-            <br><span class="muted">🔮 Умения: ${ph.skills.join(', ')}</span>
-          </div>
-        `).join('')}
-      </div>
+      ${(b.phases||[]).map(ph=>`
+        <div class="card" style="margin-bottom:8px;padding:12px">
+          <strong>Фаза ${ph.num} — ❤️${ph.hp_range}</strong>
+          ${ph.on_enter ? `<br><span class="muted">🧬 При входе: ${ph.on_enter}</span>` : ''}
+          <br><span class="muted">🔮 Умения: ${(ph.skills||[]).join(', ')}</span>
+        </div>`).join('')}
     ` : '';
-    const skillsHtml = b.skills.length ? `
+    const skillsHtml = (b.skills||[]).length ? `
       <h3>✨ Умения босса</h3>
-      <div style="margin-bottom:16px">
-        ${b.skills.map(sk=>`
-          <div class="card" style="margin-bottom:8px;padding:12px">
-            <strong>🪄 ${sk.name}</strong><br>
-            <span class="muted">${sk.desc}</span>
-          </div>
-        `).join('')}
-      </div>
+      ${(b.skills||[]).map(sk=> typeof sk === 'string'
+        ? `<div class="card" style="margin-bottom:8px;padding:12px"><strong>🪄 ${sk}</strong></div>`
+        : `<div class="card" style="margin-bottom:8px;padding:12px"><strong>🪄 ${sk.name}</strong><br><span class="muted">${sk.desc}</span></div>`).join('')}
     ` : '';
     box.innerHTML = `
       <h2>${b.name} <span class="muted">· уровень ${b.lvl}</span></h2>
