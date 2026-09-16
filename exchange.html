@@ -10,12 +10,23 @@
 <a href="exchange.html" class="active">💱 Обмен</a>
 <a href="rental.html">📦 Аренда</a>
 <a href="bosses.html">🐲 Рейд-боссы</a>
+<a href="bots.html">🤖 Боты</a>
+<a href="bots.html">🤖 Боты</a>
 </header><main>
-<h1>💱 Обмен</h1>
-<h2>📜 Правила обмена</h2>
-<div class="card" id="rules-box"></div>
-<h2>📋 Примеры обмена</h2>
-<div class="card" id="examples-box"></div>
+<h1>💱 Обмен через клановое хранилище</h1>
+<div class="card" style="border-left:3px solid var(--accent)"><h2>📜 Правила обмена</h2><ul id="rules-box"></ul></div>
+<div class="card" style="border-left:3px solid #ffd700"><h2>💰 Курсы</h2><ul id="rates-box"></ul></div>
+<div class="card" style="border-left:3px solid #4caf50"><h2>📋 Пример репоста</h2><div id="example-box"></div></div>
 </main>
 <script src="assets/render.js"></script>
-<script>initExchangePage();</script></body></html>
+<script>
+loadJSON('data/exchange.json').then(d=>{
+  document.getElementById('rules-box').innerHTML = d.rules.map(r=>`<li style="margin-bottom:8px">${r}</li>`).join('');
+  document.getElementById('rates-box').innerHTML = d.rates.map(r=>`<li style="margin-bottom:8px">${r}</li>`).join('');
+  document.getElementById('example-box').innerHTML = `
+    <div style="background:#0a0f1f;padding:12px;border-radius:8px;font-family:monospace;border-left:3px solid #4caf50">
+      <div style="color:#4caf50;margin-bottom:6px">${d.example.give}</div>
+      <div style="color:var(--accent);font-weight:bold">➡️ ${d.example.note}</div>
+    </div>`;
+});
+</script></body></html>

@@ -3,7 +3,8 @@ const GEAR_PAGES = {weapons:'gear-weapons.html',armor:'gear-armor.html',acc:'gea
 const GEAR_NAMES = {weapons:'⚔️ Оружие',armor:'🛡 Броня',acc:'💍 Аксессуары',agates:'🔮 Агаты',rbacc:'🐲 Аксы с РБ'};
 async function initGearPage(){
   const cat = document.body.dataset.category;
-  const data = await loadJSON('data/gear.json');
+  const fileMap = {weapons:'gear-weapons.json',armor:'gear-armor.json',acc:'gear-acc.json',agates:'gear-agates.json',rbacc:'gear-rbacc.json'};
+  const data = await loadJSON('data/' + fileMap[cat]);
   const catSel = document.getElementById('sel-category');
   const subSel = document.getElementById('sel-sub');
   const itemSel = document.getElementById('sel-item');
