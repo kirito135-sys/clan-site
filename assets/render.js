@@ -82,7 +82,7 @@ async function initExchangePage(){
 async function initRentalPage(){
   const d = await loadJSON('data/rental.json');
   document.getElementById('rental-box').innerHTML = d.length
-    ? '<table><tr><th>Предмет</th><th>Для чего</th><th>Условия</th></tr>' + d.map(r=>`<tr><td>${r.name}</td><td>${r.purpose||''}</td><td>${r.terms||''}</td></tr>`).join('') + '</table>'
+    ? '<table><tr><th>Предмет</th><th>Для чего</th></tr>' + d.map(r=>`<tr><td>${r.name}</td><td>${r.purpose||''}</td></tr>`).join('') + '</table>'
     : '<p class="muted">Нет данных.</p>';
 }
 async function initBossesPage(){
