@@ -115,3 +115,15 @@ async function initBossesPage(){
   };
   sel.onchange = render; render();
 }
+
+async function initDungeonBosses(){
+  const data = await loadJSON('data/dbosses.json');
+  const sel = document.getElementById('sel-dboss');
+  const box = document.getElementById('dboss-box');
+  sel.innerHTML = Object.keys(data).map(l=>`<option value="${l}">🔸 Боссы ${l} уровня</option>`).join('');
+  const render = () => {
+    const rows = (data[sel.value]||[]).map(b=>`<tr><td>${b.name}</td><td>${b.atk}</td><td>${b.def}</td><td>${b.hp}</td><td>${b.crit||'—'}</td><td>${(b.skills||[]).join(', ')||'—'}</td></tr>`).join('');
+    box.innerHTML = `<div style="overflow-x:auto"><table><tr><th>Босс</th><th>⚔️ Урон</th><th>🛡 Защита</th><th>❤️ ХП</th><th>🎲 Крит</th><th>📘 Умения</th></tr>${rows}</table></div>`;
+  };
+  sel.onchange = render; render();
+}
