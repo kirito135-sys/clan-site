@@ -34,17 +34,24 @@ async function initGearPage(){
 function fmtAdena(n){ return n>=1000000 ? (n/1000000)+'kk' : n>=1000 ? (n/1000)+'k' : n; }
 async function initSkillsPage(){
   const d = await loadJSON('data/skills.json');
-  const rows = d.levels || [];
-  const head = '<tr><th>Уровень</th><th>📘 Книга</th><th>📜 Свиток</th><th>⚡ Энергия</th><th>💰 Адена</th></tr>';
-  const perLvl = rows.map(r=>`<tr><td>${r.lvl}</td><td>${r.book}</td><td>${r.scroll}</td><td>${r.energy}</td><td>${fmtAdena(r.adena)}</td></tr>`).join('');
-  let b=0,sc=0,en=0,ad=0; const totals=[];
-  rows.forEach(r=>{ b+=r.book; sc+=r.scroll; en+=r.energy; ad+=r.adena; totals.push({lvl:r.lvl,book:b,scroll:sc,energy:en,adena:ad}); });
-  const totalRows = totals.map(t=>`<tr><td>${t.lvl}</td><td>${t.book}</td><td>${t.scroll}</td><td>${t.energy}</td><td>${fmtAdena(t.adena)}</td></tr>`).join('');
-  document.getElementById('skills-box').innerHTML = `
-    <div style="display:flex;gap:24px;flex-wrap:wrap">
-      <div style="flex:1;min-width:300px"><h2>📈 За уровень</h2><table>${head}${perLvl}</table></div>
-      <div style="flex:1;min-width:300px"><h2>📊 Всего (накопительно)</h2><table>${head}${totalRows}</table></div>
-    </div>`;
+  const tiers = d.tiers || [{name:'🥉 1 грейд', levels: d.levels||[]}];
+  const tierSel = document.getElementById('sel-tier');
+  const box = document.getElementById('skills-box');
+  tierSel.innerHTML = tiers.map((t,i)=>`<option value="${i}">${t.name}</option>`).join('');
+  const render = () => {
+    const rows = (tiers[tierSel.value]||{}).levels || [];
+    const head = '<tr><th>Уровень</th><th>📘 Книга</th><th>📜 Свиток</th><th>⚡ Энергия</th><th>💰 Адена</th></tr>';
+    const perLvl = rows.map(r=>`<tr><td>${r.lvl}</td><td>${r.book}</td><td>${r.scroll}</td><td>${r.energy}</td><td>${fmtAdena(r.adena)}</td></tr>`).join('');
+    let b=0,sc=0,en=0,ad=0; const totals=[];
+    rows.forEach(r=>{ b+=r.book; sc+=r.scroll; en+=r.energy; ad+=r.adena; totals.push({lvl:r.lvl,book:b,scroll:sc,energy:en,adena:ad}); });
+    const totalRows = totals.map(t=>`<tr><td>${t.lvl}</td><td>${t.book}</td><td>${t.scroll}</td><td>${t.energy}</td><td>${fmtAdena(t.adena)}</td></tr>`).join('');
+    box.innerHTML = `
+      <div style="display:flex;gap:24px;flex-wrap:wrap">
+        <div style="flex:1;min-width:300px"><h2>📈 За уровень</h2><table>${head}${perLvl}</table></div>
+        <div style="flex:1;min-width:300px"><h2>📊 Всего (накопительно)</h2><table>${head}${totalRows}</table></div>
+      </div>`;
+  };
+  tierSel.onchange = render; render();
 }
 async function initDungeonsPage(){
   const data = await loadJSON('data/dungeons.json');
