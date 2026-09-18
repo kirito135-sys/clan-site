@@ -134,3 +134,33 @@ async function initDungeonBosses(){
   };
   sel.onchange = render; render();
 }
+
+async function initComparePage(){
+  const data = await loadJSON('data/compare.json');
+  const armor = data.armor || {};
+  const grades = Object.keys(armor);
+  const gradeSel = document.getElementById('sel-grade');
+  const setSel = document.getElementById('sel-set');
+  const box = document.getElementById('compare-box');
+  const STAT_ICON = {hp:'❤️ HP',def:'🛡 Защита',crit:'🎲 Крит %',acc:'🎯 Точность',eva:'🏃 Уворот',dmg:'🗡 Урон'};
+  gradeSel.innerHTML = grades.map(g=>`<option value="${g}">${g} грейд</option>`).join('');
+  const fillSets = () => {
+    const sets = Object.keys(armor[gradeSel.value] || {});
+    setSel.innerHTML = sets.map(s=>`<option value="${s}">${s}</option>`).join('');
+    renderSet();
+  };
+  const renderSet = () => {
+    const set = (armor[gradeSel.value] || {})[setSel.value] || {};
+    const statKeys = Object.keys(set);
+    if(!statKeys.length){ box.innerHTML = '<p class="muted">Нет данных.</p>'; return; }
+    const maxLen = Math.max(...statKeys.map(k => set[k].length));
+    const head = '<tr><th>Заточка</th>' + statKeys.map(k=>`<th>${STAT_ICON[k]||k}</th>`).join('') + '</tr>';
+    const rows = Array.from({length:maxLen}, (_,i)=>
+      '<tr><td>+'+i+'</td>' + statKeys.map(k=>`<td>${set[k][i]!==undefined?set[k][i]:'—'}</td>`).join('') + '</tr>'
+    ).join('');
+    box.innerHTML = `<h2>${setSel.value} <span class="muted">· ${gradeSel.value} грейд</span></h2>
+      <div style="overflow-x:auto"><table>${head}${rows}</table></div>`;
+  };
+  gradeSel.onchange = fillSets; setSel.onchange = renderSet;
+  fillSets();
+}
