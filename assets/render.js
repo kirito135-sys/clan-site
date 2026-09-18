@@ -138,29 +138,57 @@ async function initDungeonBosses(){
 async function initComparePage(){
   const data = await loadJSON('data/compare.json');
   const armor = data.armor || {};
-  const grades = Object.keys(armor);
-  const gradeSel = document.getElementById('sel-grade');
-  const setSel = document.getElementById('sel-set');
-  const box = document.getElementById('compare-box');
   const STAT_ICON = {hp:'❤️ HP',def:'🛡 Защита',crit:'🎲 Крит %',acc:'🎯 Точность',eva:'🏃 Уворот',dmg:'🗡 Урон'};
-  gradeSel.innerHTML = grades.map(g=>`<option value="${g}">${g} грейд</option>`).join('');
-  const fillSets = () => {
-    const sets = Object.keys(armor[gradeSel.value] || {});
-    setSel.innerHTML = sets.map(s=>`<option value="${s}">${s}</option>`).join('');
-    renderSet();
+  const slots = ['🎩 Шлем','🥼 Нагрудник','👖 Штаны','🧤 Перчатки','🥾 Ботинки'];
+  const slotSel = document.getElementById('cmp-slot');
+  const aSel = document.getElementById('cmp-a');
+  const bSel = document.getElementById('cmp-b');
+  const eSel = document.getElementById('cmp-ench');
+  const btn = document.getElementById('cmp-go');
+  const res = document.getElementById('cmp-result');
+  const tables = document.getElementById('cmp-tables');
+  slotSel.innerHTML = slots.map(s=>`<option>${s}</option>`).join('');
+  const opts = [];
+  for(const g of Object.keys(armor)) for(const n of Object.keys(armor[g])) opts.push({g,n});
+  const optHtml = opts.map(o=>`<option value="${o.g}|${o.n}">${o.g} · ${o.n}</option>`).join('');
+  aSel.innerHTML = optHtml; bSel.innerHTML = optHtml;
+  if(opts.length>1) bSel.selectedIndex = 1;
+  eSel.innerHTML = Array.from({length:13},(_,i)=>`<option value="${i}">+${i}</option>`).join('');
+  const getSet = sel => { const [g,n] = sel.value.split('|'); return (armor[g]||{})[n] || {}; };
+  const fullTable = (set,title) => {
+    const keys = Object.keys(set);
+    if(!keys.length) return '';
+    const head = '<tr><th>Заточка</th>'+keys.map(k=>`<th>${STAT_ICON[k]||k}</th>`).join('')+'</tr>';
+    const rows = Array.from({length:13},(_,i)=>'<tr><td>+'+i+'</td>'+keys.map(k=>`<td>${set[k][i]!==undefined?set[k][i]:'—'}</td>`).join('')+'</tr>').join('');
+    return `<div style="flex:1;min-width:280px"><h3>${title}</h3><div style="overflow-x:auto"><table>${head}${rows}</table></div></div>`;
   };
-  const renderSet = () => {
-    const set = (armor[gradeSel.value] || {})[setSel.value] || {};
-    const statKeys = Object.keys(set);
-    if(!statKeys.length){ box.innerHTML = '<p class="muted">Нет данных.</p>'; return; }
-    const maxLen = Math.max(...statKeys.map(k => set[k].length));
-    const head = '<tr><th>Заточка</th>' + statKeys.map(k=>`<th>${STAT_ICON[k]||k}</th>`).join('') + '</tr>';
-    const rows = Array.from({length:maxLen}, (_,i)=>
-      '<tr><td>+'+i+'</td>' + statKeys.map(k=>`<td>${set[k][i]!==undefined?set[k][i]:'—'}</td>`).join('') + '</tr>'
-    ).join('');
-    box.innerHTML = `<h2>${setSel.value} <span class="muted">· ${gradeSel.value} грейд</span></h2>
-      <div style="overflow-x:auto"><table>${head}${rows}</table></div>`;
+  const compare = () => {
+    const A = getSet(aSel), B = getSet(bSel);
+    const e = parseInt(eSel.value);
+    const [ga,na] = aSel.value.split('|'); const [gb,nb] = bSel.value.split('|');
+    const keys = [...new Set([...Object.keys(A),...Object.keys(B)])];
+    let rows=''; const better=[], worse=[], same=[];
+    for(const k of keys){
+      const va = (A[k]||[])[e], vb = (B[k]||[])[e];
+      const da = va!==undefined?va:0, db = vb!==undefined?vb:0;
+      const diff = +((db-da).toFixed(2));
+      const arrow = diff>0?'🟢':(diff<0?'🔴':'➖');
+      if(diff>0) better.push(`${STAT_ICON[k]} +${diff}`);
+      else if(diff<0) worse.push(`${STAT_ICON[k]} ${diff}`);
+      else same.push(STAT_ICON[k]);
+      rows += `<tr><td>${STAT_ICON[k]||k}</td><td>${va!==undefined?va:'—'}</td><td>${vb!==undefined?vb:'—'}</td><td>${arrow} ${diff>0?'+':''}${diff}</td></tr>`;
+    }
+    const verdict = [];
+    if(better.length) verdict.push(`🟢 <b>${nb}</b> лучше: ${better.join(', ')}`);
+    if(worse.length) verdict.push(`🔴 <b>${nb}</b> хуже: ${worse.join(', ')}`);
+    if(same.length) verdict.push(`➖ одинаково: ${same.join(', ')}`);
+    const winner = better.length>worse.length?nb:(worse.length>better.length?na:'ничья');
+    res.innerHTML = `<h2>${slotSel.value}: ${na} (${ga}) +${e} vs ${nb} (${gb}) +${e}</h2>
+      <div style="overflow-x:auto"><table><tr><th>Характеристика</th><th>A: ${na}</th><th>B: ${nb}</th><th>Разница (B−A)</th></tr>${rows}</table></div>
+      <p style="margin-top:12px">${verdict.join('<br>')}</p>
+      <p class="muted">Итог: ${better.length} против ${worse.length} по числу характеристик — ${winner==='ничья'?'ничья':'в пользу '+winner}.</p>`;
+    tables.innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap">${fullTable(A,'A: '+na+' ('+ga+')')+fullTable(B,'B: '+nb+' ('+gb+')')}</div>`;
   };
-  gradeSel.onchange = fillSets; setSel.onchange = renderSet;
-  fillSets();
+  btn.onclick = compare;
+  compare();
 }

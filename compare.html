@@ -14,12 +14,16 @@
 <a href="compare.html" class="active">⚖️ Сравнение</a>
 </header><main>
 <h1>⚖️ Сравнение экипировки (B / A / S)</h1>
-<p class="muted">Выбери грейд и сет — увидишь статы по заточкам +0…+12.</p>
+<p class="muted">Выбери слот, два сета и заточку → кнопка покажет, где лучше, где хуже. Статы сета одинаковы во всех 5 слотах.</p>
 <div class="selects">
-  <select id="sel-grade"></select>
-  <select id="sel-set"></select>
+<select id="cmp-slot"></select>
+<select id="cmp-a"></select>
+<select id="cmp-b"></select>
+<select id="cmp-ench"></select>
 </div>
-<div class="card" id="compare-box"></div>
+<button id="cmp-go" class="bot-btn">⚖️ Сравнить</button>
+<div class="card" id="cmp-result" style="margin-top:16px"></div>
+<div class="card" id="cmp-tables"></div>
 </main>
 <script src="assets/render.js"></script>
 <script>initComparePage();</script></body></html>
