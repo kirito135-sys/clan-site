@@ -138,50 +138,48 @@ async function initDungeonBosses(){
 async function initComparePage(){
   const data = await loadJSON('data/compare.json');
   const armor = data.armor || {};
-  const STAT_ICON = {hp:'❤️ HP',def:'🛡 Защита',crit:'🎲 Крит %',acc:'🎯 Точность',eva:'🏃 Уворот',dmg:'🗡 Урон'};
-  const slots = ['🎩 Шлем','🥼 Нагрудник','👖 Штаны','🧤 Перчатки','🥾 Ботинки'];
-  const slotSel = document.getElementById('cmp-slot');
-  const aSel = document.getElementById('cmp-a');
-  const bSel = document.getElementById('cmp-b');
-  const eaSel = document.getElementById('cmp-ea');
-  const ebSel = document.getElementById('cmp-eb');
-  const btn = document.getElementById('cmp-go');
+  const SLOTS = [['🎩','Шлем'],['🥼','Доспех'],['👖','Штаны'],['🧤','Перчатки'],['🥾','Ботинки']];
+  const STATS = [['hp','❤️','Здоровье',''],['def','🛡️','Защита',''],['eva','🏃','Уворот',''],['dmg','⚔️','Урон',''],['crit','🎲','Крит','%'],['acc','🎯','Точность','']];
+  const setsList = [];
+  for(const g of ['B','A','S']) for(const n of Object.keys(armor[g]||{})) setsList.push({g,n});
+  const boxA = document.getElementById('cmp-a-box');
+  const boxB = document.getElementById('cmp-b-box');
   const res = document.getElementById('cmp-result');
-  slotSel.innerHTML = slots.map(s=>`<option>${s}</option>`).join('');
-  const opts = [];
-  for(const g of Object.keys(armor)) for(const n of Object.keys(armor[g])) opts.push({g,n});
-  const optHtml = opts.map(o=>`<option value="${o.g}|${o.n}">${o.g} · ${o.n}</option>`).join('');
-  aSel.innerHTML = optHtml; bSel.innerHTML = optHtml;
-  if(opts.length>1) bSel.selectedIndex = 1;
-  const enchHtml = Array.from({length:13},(_,i)=>`<option value="${i}">+${i}</option>`).join('');
-  eaSel.innerHTML = enchHtml; ebSel.innerHTML = enchHtml;
-  const compare = () => {
-    const [ga,na] = aSel.value.split('|');
-    const [gb,nb] = bSel.value.split('|');
-    const ea = parseInt(eaSel.value), eb = parseInt(ebSel.value);
-    const A = (armor[ga]||{})[na] || {}, B = (armor[gb]||{})[nb] || {};
-    const keys = [...new Set([...Object.keys(A),...Object.keys(B)])];
-    let rows=''; const better=[], worse=[], same=[];
-    for(const k of keys){
-      const va = (A[k]||[])[ea], vb = (B[k]||[])[eb];
-      const da = va!==undefined?va:0, db = vb!==undefined?vb:0;
-      const diff = +((db-da).toFixed(2));
-      const arrow = diff>0?'🟢':(diff<0?'🔴':'');
-      if(diff>0) better.push(`${STAT_ICON[k]} +${diff}`);
-      else if(diff<0) worse.push(`${STAT_ICON[k]} ${diff}`);
-      else same.push(STAT_ICON[k]);
-      rows += `<tr><td>${STAT_ICON[k]||k}</td><td>${va!==undefined?va:'—'}</td><td>${vb!==undefined?vb:'—'}</td><td>${arrow} ${diff>0?'+':''}${diff}</td></tr>`;
+  const selStyle = 'background:#16213e;color:#fff;border:1px solid #e94560;border-radius:8px;padding:6px 8px';
+  const setOpts = '<option value="">—</option>' + setsList.map(o=>`<option value="${o.g}|${o.n}">${o.g} · ${o.n}</option>`).join('');
+  const enchOpts = Array.from({length:13},(_,i)=>`<option value="${i}">+${i}</option>`).join('');
+  const rowsHtml = tag => SLOTS.map(([e,name],i)=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
+    <span style="min-width:110px">${e} ${name}:</span>
+    <select id="${tag}-s${i}" style="${selStyle};flex:1;min-width:150px">${setOpts}</select>
+    <select id="${tag}-e${i}" style="${selStyle};width:70px">${enchOpts}</select>
+  </div>`).join('');
+  boxA.innerHTML = rowsHtml('ca');
+  boxB.innerHTML = rowsHtml('cb');
+  const sumSet = tag => {
+    const tot = {hp:0,def:0,eva:0,dmg:0,crit:0,acc:0};
+    for(let i=0;i<5;i++){
+      const v = document.getElementById(`${tag}-s${i}`).value;
+      const e = parseInt(document.getElementById(`${tag}-e${i}`).value);
+      if(!v) continue;
+      const [g,n] = v.split('|');
+      const set = (armor[g]||{})[n] || {};
+      for(const k of Object.keys(tot)){
+        const arr = set[k];
+        if(arr && arr[e]!==undefined) tot[k] += arr[e];
+      }
     }
-    const verdict = [];
-    if(better.length) verdict.push(`🟢 <b>${nb}</b> лучше: ${better.join(', ')}`);
-    if(worse.length) verdict.push(`🔴 <b>${nb}</b> хуже: ${worse.join(', ')}`);
-    if(same.length) verdict.push(`➖ одинаково: ${same.join(', ')}`);
-    const winner = better.length>worse.length?nb:(worse.length>better.length?na:'ничья');
-    res.innerHTML = `<h2>${slotSel.value}: ${na} (${ga}) +${ea} vs ${nb} (${gb}) +${eb}</h2>
-      <div style="overflow-x:auto"><table><tr><th>Характеристика</th><th>A: ${na} +${ea}</th><th>B: ${nb} +${eb}</th><th>Разница (B−A)</th></tr>${rows}</table></div>
-      <p style="margin-top:12px">${verdict.join('<br>')}</p>
-      <p class="muted">Итог: ${better.length} против ${worse.length} по числу характеристик — ${winner==='ничья'?'ничья':'в пользу '+winner}.</p>`;
+    return tot;
   };
-  btn.onclick = compare;
+  const fmt = v => { const r = Math.round(v*10)/10; return Number.isInteger(r)? String(r) : r.toFixed(1); };
+  const compare = () => {
+    const A = sumSet('ca'), B = sumSet('cb');
+    const lines = STATS.filter(([k])=> A[k]||B[k]).map(([k,ico,label,suf])=>{
+      const d = Math.round((B[k]-A[k])*10)/10;
+      const arrow = d>0?'🟢':(d<0?'🔴':'');
+      return `<div style="margin-bottom:6px">${ico} ${label}: A ${fmt(A[k])}${suf} → B ${fmt(B[k])}${suf} (${d>0?'+':''}${fmt(d)}${suf}) ${arrow}</div>`;
+    }).join('');
+    res.innerHTML = `<h2>⚖️ Сравнение:</h2>${lines || '<p class="muted">Выбери сеты A и B по слотам — и нажми «Сравнить».</p>'}`;
+  };
+  document.getElementById('cmp-go').onclick = compare;
   compare();
 }
