@@ -35,4 +35,5 @@ loadJSON('data/site.json').then(d=>{
   document.getElementById('dev').innerHTML = d.dev ? 'Сайт разработал: <b>' + d.dev + '</b>' : '';
   document.getElementById('credits').innerHTML = (d.credits||[]).map(c=>`<span class="chip">${c}</span>`).join('');
 });
-</script></body></html>
+</script><script src="assets/menu.js"></script>
+</body></html>
