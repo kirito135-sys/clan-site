@@ -1,6 +1,20 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Билды — Legacy II</title><link rel="stylesheet" href="assets/style.css"></head>
+<title>Билды — Legacy II</title><link rel="stylesheet" href="assets/style.css">
+<style>
+.class-block{background:#16213e;border-radius:14px;padding:18px;margin-bottom:20px;border-top:4px solid #e94560}
+.class-block h2{margin:0 0 12px;color:#f8d75a;display:flex;align-items:center;gap:10px}
+.class-block h2 .icon{font-size:32px}
+.race-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.race-card{background:#0f3460;border-radius:10px;padding:12px;border-left:3px solid #7ec8e3;min-height:60px}
+.race-card.empty{opacity:0.45;border-left-color:#6c7086}
+.race-card h3{margin:0 0 8px;color:#7ec8e3;font-size:15px}
+.build-link{display:block;background:#2a1a4e;color:#fff;text-decoration:none;padding:6px 10px;border-radius:6px;margin:4px 0;font-size:14px;border:1px solid transparent;transition:all 0.2s}
+.build-link:hover{border-color:#e94560;background:#3a2560}
+.build-link .path{color:#f8d75a;font-weight:bold;display:block}
+.build-link .desc{color:#cdd6f4;font-size:12px;opacity:0.85}
+.coming{color:#6c7086;font-size:13px;font-style:italic;padding:4px 0}
+</style></head>
 <body><header>
 <a href="index.html">🏠 Главная</a>
 <a href="gear-weapons.html">🛡 Экипировка</a>
@@ -14,8 +28,50 @@
 <a href="compare.html">⚖️ Сравнение</a>
 </header><main>
 <h1>📖 Билды</h1>
-<p class="muted">Авторские гайды по классам от игроков клана.</p>
-<div class="menu-grid">
-<a href="builds-archer-agility.html">🏹 Лучник: билд в проворство<span class="muted small">проворка, уворот, дебаффы, сеты PvP/PvE, агаты, скиллы под РБ/локу/данж/КВ</span></a>
+<p class="muted">Авторские гайды по классам и расам от игроков клана.</p>
+
+<div class="class-block">
+<h2><span class="icon">🏹</span> Лучник</h2>
+<div class="race-row">
+<div class="race-card empty">
+<h3>🧝 Эльф</h3>
+<span class="coming">пока нет гайдов</span>
 </div>
+<div class="race-card">
+<h3>🧟 Орк</h3>
+<a href="builds-archer-agility.html" class="build-link"><span class="path">В проворство</span><span class="desc">упор на уворот и выживание через дебаффы</span></a>
+<a href="builds-archer-dex.html" class="build-link"><span class="path">В ловкость</span><span class="desc">акцент на криты, урон и скорость атаки</span></a>
+</div>
+</div>
+</div>
+
+<div class="class-block">
+<h2><span class="icon">🔮</span> Маг</h2>
+<div class="race-row">
+<div class="race-card empty">
+<h3>👤 Человек</h3>
+<span class="coming">пока нет гайдов</span>
+</div>
+<div class="race-card empty">
+<h3>🧝 Эльф</h3>
+<span class="coming">пока нет гайдов</span>
+</div>
+</div>
+</div>
+
+<div class="class-block">
+<h2><span class="icon">⚔️</span> Мечник</h2>
+<div class="race-row">
+<div class="race-card empty">
+<h3>👤 Человек</h3>
+<span class="coming">пока нет гайдов</span>
+</div>
+<div class="race-card empty">
+<h3>🧟 Орк</h3>
+<span class="coming">пока нет гайдов</span>
+</div>
+</div>
+</div>
+
+<p class="muted" style="text-align:center;margin-top:24px">💡 Есть свой билд? Присылай — добавим в раздел!</p>
 </main></body></html>
